@@ -1,4 +1,28 @@
-operation Main(): Result {
+import Std.Math.BitSizeI;
+import Microsoft.Quantum.Convert.*;
+import Microsoft.Quantum.Math.*;
+
+operation Main(): Int {
+    let max = 100;
+    Message($"Sampling a random number between 0 and {max}");
+    // Generate random number in the 0..max range.
+    return GenerateRandomNumberInRange(max);
+}
+
+// Generates a random number between 0 and `max`.
+operation GenerateRandomNumberInRange(max: Int): Int {
+
+    mutable bits = [];
+    let nBits = BitSizeI(max);
+    for idxBit in 1..nBits {
+        set bits += [GenerateRandomBit()];
+    }
+    let sample = ResultArrayAsInt(bits);
+
+    return sample > max ? GenerateRandomNumberInRange(max) | sample;
+}
+
+operation GenerateRandomBit(): Result {
 
     // Allocate a qubit
     use q = Qubit();
